@@ -1,0 +1,178 @@
+<div class="flex flex-col max-h-screen -m-6">
+
+  <!-- ============ HEADER ============ -->
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+      <div class="text-lg font-medium">
+        {{ data?.id ? 'Modifier le plan d\'abonnement' : 'Nouveau plan d\'abonnement' }}
+      </div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <!-- ============ FORMULAIRE ============ -->
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <!-- Code -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Code (identifiant unique)</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+      <mat-select formControlName="code">
+        <mat-option *ngFor="let c of codesDisponibles" [value]="c.value">
+          {{ c.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.code.hasError('required')">
+        Le code est requis
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Nom -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Nom du plan</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+      <input matInput type="text" placeholder="Ex : Abonnement mensuel"
+             formControlName="nom" maxlength="100">
+      <mat-hint align="end">{{ form.controls.nom.value?.length || 0 }}/100</mat-hint>
+      <mat-error *ngIf="form.controls.nom.hasError('required')">
+        Le nom est requis
+      </mat-error>
+      <mat-error *ngIf="form.controls.nom.hasError('minlength')">
+        Le nom doit contenir au moins 2 caractères
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Prix + Devise côte à côte -->
+    <div class="flex flex-col sm:flex-row gap-4">
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Prix</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:currency-dollar'"></mat-icon>
+        <input matInput type="number" placeholder="0" formControlName="prix" min="0">
+        <mat-error *ngIf="form.controls.prix.hasError('required')">
+          Le prix est requis
+        </mat-error>
+        <mat-error *ngIf="form.controls.prix.hasError('min')">
+          Le prix ne peut pas être négatif
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Devise</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:currency-dollar'"></mat-icon>
+        <mat-select formControlName="devise">
+          <mat-option *ngFor="let d of devisesDisponibles" [value]="d.value">
+            {{ d.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Type de facturation -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Type de facturation</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:clock'"></mat-icon>
+      <mat-select formControlName="typeFacturation">
+        <mat-option *ngFor="let c of codesDisponibles" [value]="c.value">
+          {{ c.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.typeFacturation.hasError('required')">
+        Le type de facturation est requis
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Description</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:document-text'"></mat-icon>
+      <textarea matInput rows="3" placeholder="Description optionnelle"
+                formControlName="description" maxlength="255"></textarea>
+      <mat-hint align="end">{{ form.controls.description.value?.length || 0 }}/255</mat-hint>
+    </mat-form-field>
+
+    <!-- Limites : Annonces / Photos côte à côte -->
+    <div class="flex flex-col sm:flex-row gap-4">
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Nombre d'annonces max</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:document-duplicate'"></mat-icon>
+        <input matInput type="number" placeholder="5" formControlName="nbAnnoncesMax" min="0">
+        <mat-error *ngIf="form.controls.nbAnnoncesMax.hasError('required')">
+          Ce champ est obligatoire
+        </mat-error>
+        <mat-error *ngIf="form.controls.nbAnnoncesMax.hasError('min')">
+          Le nombre ne peut pas être négatif
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Nombre de photos max</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:photograph'"></mat-icon>
+        <input matInput type="number" placeholder="5" formControlName="nbPhotosMax" min="0">
+      </mat-form-field>
+    </div>
+
+    <!-- Ordre + Couleur côte à côte -->
+    <div class="flex flex-col sm:flex-row gap-4">
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Ordre d'affichage</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:sort-ascending'"></mat-icon>
+        <input matInput type="number" placeholder="0" formControlName="ordre" min="0">
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat flex-1">
+        <mat-label>Couleur (hex)</mat-label>
+        <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:color-swatch'"></mat-icon>
+        <input matInput type="text" placeholder="#16A34A" formControlName="couleur" maxlength="20">
+      </mat-form-field>
+    </div>
+
+    <!-- Cases à cocher -->
+    <div class="flex flex-col gap-3 py-2">
+      <mat-checkbox formControlName="videoAutorisee" color="primary">
+        Vidéo autorisée
+      </mat-checkbox>
+      <mat-checkbox formControlName="badgeActif" color="primary">
+        Badge actif
+      </mat-checkbox>
+      <mat-checkbox formControlName="populaire" color="primary">
+        Plan populaire
+      </mat-checkbox>
+      <mat-checkbox formControlName="actif" color="primary">
+        Plan actif
+      </mat-checkbox>
+    </div>
+
+    <!-- Geler -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Geler</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:lock-closed'"></mat-icon>
+      <mat-select formControlName="geler">
+        <mat-option [value]="0">Non</mat-option>
+        <mat-option [value]="1">Oui</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.geler.hasError('required')">
+        Ce champ est obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <!-- ============ BOUTONS ============ -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'"
+        [disabled]="form.invalid || inProgress" class="min-w-32">
+        <mat-progress-spinner *ngIf="inProgress" diameter="20" mode="indeterminate" class="mr-2 inline-block">
+        </mat-progress-spinner>
+        <span *ngIf="!inProgress">{{ data?.id ? 'Enregistrer' : 'Ajouter' }}</span>
+        <span *ngIf="inProgress">Enregistrement...</span>
+      </button>
+    </div>
+
+  </form>
+</div> 

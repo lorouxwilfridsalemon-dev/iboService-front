@@ -1,0 +1,104 @@
+<div class="flex flex-col max-h-screen -m-6">
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+      <div class="text-lg font-medium">{{ titreFormulaire }}</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Nom *</mat-label>
+        <input matInput formControlName="nom" placeholder="Nom de famille">
+        <mat-error *ngIf="form.controls.nom.hasError('required')">Le nom est requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Prénom *</mat-label>
+        <input matInput formControlName="prenom" placeholder="Prénom">
+        <mat-error *ngIf="form.controls.prenom.hasError('required')">Le prénom est requis</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>Pseudo</mat-label>
+      <input matInput formControlName="pseudo" placeholder="Nom d'utilisateur">
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>Email *</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="exemple@email.com">
+      <mat-error *ngIf="form.controls.email.hasError('required')">L'email est requis</mat-error>
+      <mat-error *ngIf="form.controls.email.hasError('email')">Email invalide</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>Contact</mat-label>
+      <input matInput formControlName="contact" placeholder="Numéro de téléphone">
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>{{ isEditMode ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe *' }}</mat-label>
+      <input matInput formControlName="motDePasse" type="password" placeholder="Minimum 8 caractères">
+      <mat-error *ngIf="form.controls.motDePasse.hasError('required')">Le mot de passe est requis</mat-error>
+      <mat-error *ngIf="form.controls.motDePasse.hasError('minlength')">Minimum 8 caractères</mat-error>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Langue</mat-label>
+        <mat-select formControlName="language">
+          <mat-option value="fr">Français</mat-option>
+          <mat-option value="en">English</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Devise</mat-label>
+        <mat-select formControlName="devise">
+          <mat-option value="XOF">FCFA (XOF)</mat-option>
+          <mat-option value="EUR">Euro (EUR)</mat-option>
+          <mat-option value="USD">Dollar (USD)</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>Profil</mat-label>
+      <mat-select formControlName="id_pro">
+        <mat-option *ngFor="let p of profils" [value]="p.id">{{ p.libelle }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" maxlength="255" placeholder="Description de l'utilisateur"></textarea>
+      <mat-hint align="end">{{ form.controls.description.value?.length || 0 }}/255</mat-hint>
+    </mat-form-field>
+
+    <!-- ✅ CORRIGÉ : formControlName="actif" (booléen propre au toggle),
+         plutôt que "geler" directement — évite l'envoi accidentel d'un
+         booléen là où le backend attend un entier 0/1. La conversion se
+         fait dans save() du composant. -->
+    <mat-slide-toggle formControlName="actif" [color]="'primary'">
+      {{ form.controls.actif.value ? 'Utilisateur actif' : 'Utilisateur inactif' }}
+    </mat-slide-toggle>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress" class="min-w-32">
+        <span *ngIf="!inProgress">{{ isEditMode ? 'Modifier' : 'Créer' }}</span>
+        <span *ngIf="inProgress">Enregistrement...</span>
+      </button>
+    </div>
+  </form>
+</div>  

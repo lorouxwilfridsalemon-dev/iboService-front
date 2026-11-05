@@ -1,0 +1,330 @@
+
+
+
+<div class="flex flex-col flex-auto min-w-0">
+  <!-- En-tête avec fond bleu -->
+  <div class="relative flex-0 py-4 px-4 sm:p-4 bg-card items-center justify-center overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white-900 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg> 
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div style="color: #33D4FF;" class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+        Annonces
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <section class="chexbox-section">
+          <mat-radio-group [(ngModel)]="recensementPeriode" (change)="onPeriodChange()">
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" [checked]="recensementPeriode === 'jour'" value="jour">
+                &nbsp;&nbsp; Jour
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="semaine">
+                &nbsp;&nbsp; Semaine
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="mois">
+                &nbsp;&nbsp; Mois
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="annee">
+                &nbsp;&nbsp; Année
+              </mat-radio-button>
+            </button>
+          </mat-radio-group>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <!-- Section des filtres et statistiques -->
+  <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Carte TOTAL ANNONCES -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">TOTAL ANNONCES</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ totalFilteredItems }}</p>
+          </div>
+          <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+            <mat-icon class="text-primary-600 dark:text-primary-300" [svgIcon]="'heroicons_outline:home'"></mat-icon>
+          </div>
+        </div>
+        <div class="mt-2">
+          <span class="text-xs text-gray-500 dark:text-gray-400">{{ getPeriodeTexte() }}</span>
+        </div>
+      </div>
+
+      <!-- Cartes catégories dynamiques -->
+      <div *ngFor="let stat of categoriesStats; let i = index"
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-t border-r border-b border-gray-200 dark:border-gray-700"
+        [ngClass]="getBorderClass(i)">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider truncate">{{ stat.nom | uppercase }}</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stat.nombre }}</p>
+          </div>
+          <div [style.background-color]="getIconBgColor(i)" class="p-3 rounded-full">
+            <mat-icon [style.color]="getIconColor(i)" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+          </div>
+        </div>
+        <div class="mt-2">
+          <span class="text-xs text-gray-500 dark:text-gray-400">Annonces</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres de périodicité -->
+    <div class="flex flex-col sm:flex-row justify-between gap-4 items-end mt-4">
+      <form *ngIf="searchForm" [formGroup]="searchForm"
+        class="flex flex-wrap lg:flex-nowrap gap-4 items-end">
+
+        <!-- Champ DATE pour JOUR -->
+        <mat-form-field *ngIf="recensementPeriode === 'jour'" class="fuse-mat-dense" appearance="fill">
+          <mat-label>Choisir une date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dateJour">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Champ SEMAINE -->
+        <mat-form-field *ngIf="recensementPeriode === 'semaine'" class="fuse-mat-dense" appearance="fill" style="min-width: 200px;">
+          <mat-label>Semaine</mat-label>
+          <mat-select formControlName="semaine" (selectionChange)="onSemaineChange()">
+            <mat-option *ngFor="let semaine of ListeSemaineGeneral" [value]="semaine.IdSemaine">
+              Semaine {{semaine.NomSemaine}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ MOIS -->
+        <mat-form-field *ngIf="recensementPeriode === 'mois'" class="fuse-mat-dense" appearance="fill" style="min-width: 120px;">
+          <mat-label>Mois</mat-label>
+          <mat-select formControlName="mois">
+            <mat-option *ngFor="let moi of mois" [value]="moi.id">{{ moi.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ ANNÉE -->
+        <mat-form-field *ngIf="recensementPeriode !== 'jour'" class="fuse-mat-dense" appearance="fill" style="min-width: 100px;">
+          <mat-label>Année</mat-label>
+          <mat-select formControlName="annee">
+            <mat-option *ngFor="let annee of annees" [value]="annee.id">{{ annee.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button class="text-white self-center" mat-flat-button color="primary" (click)="applyPeriodFilter()">
+          <mat-icon [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </button>
+      </form>
+
+      <!-- Recherche et actions -->
+      <div class="flex flex-wrap items-center gap-3">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+          <input matInput [formControl]="searchControl" placeholder="Rechercher une annonce" (keyup)="applyFilter($event)">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <!-- ✅ NOUVEAU : Bouton Publier une annonce -->
+        <button mat-flat-button color="primary" class="h-[56px]" (click)="publierAnnonce()"
+          matTooltip="Publier une nouvelle annonce">
+          <mat-icon svgIcon="heroicons_outline:plus-circle"></mat-icon>
+          <span class="ml-2">Publier</span>
+        </button>
+
+        <!-- Bouton Export -->
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="exportMenu" class="h-[56px]">
+          <mat-icon svgIcon="heroicons_solid:save"></mat-icon>
+          <span class="ml-2">Exporter</span>
+        </button>
+
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="exportExcel()">
+            <mat-icon svgIcon="heroicons_outline:document"></mat-icon>
+            <span>Excel</span>
+          </button>
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+            <span>PDF</span>
+          </button>
+        </mat-menu>
+
+        <button class="bg-accent-300 text-black" mat-flat-button [color]="'accent'" (click)="loadAnnonces()" matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="table-max-width w-full" [dataSource]="annonceDataSource" matSort>
+
+        <!-- Colonne Photo -->
+        <ng-container matColumnDef="photo">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Photo </th>
+          <td mat-cell *matCellDef="let element" class="py-2">
+            <div class="w-20 h-14 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden shadow-sm relative">
+              <img *ngIf="getPremiereImage(element)"
+                   [src]="urlPhoto(getPremiereImage(element))"
+                   alt="Photo annonce"
+                   class="w-full h-full object-cover"
+                   loading="lazy"
+                   (error)="handleImageError($event)"
+                   (load)="handleImageLoad($event)">
+
+              <mat-icon *ngIf="!getPremiereImage(element)"
+                        class="text-gray-400 dark:text-gray-500"
+                        [svgIcon]="'heroicons_outline:photograph'">
+              </mat-icon>
+
+              <span *ngIf="getNombreImages(element) > 1"
+                    class="absolute bottom-0 right-0 bg-black bg-opacity-60 text-white text-[10px] px-1.5 py-0.5 rounded-tl-md font-medium">
+                +{{ getNombreImages(element) - 1 }}
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Titre -->
+        <ng-container matColumnDef="titre">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Titre </th>
+          <td mat-cell *matCellDef="let element" class="font-medium max-w-xs truncate">
+            {{ element?.titre }}
+          </td>
+        </ng-container>
+
+        <!-- Colonne Catégorie -->
+        <ng-container matColumnDef="categorie">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Catégorie </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700">
+              {{ element?.categorie?.nom || '—' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Sous-catégorie -->
+        <ng-container matColumnDef="sousCategorie">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Sous-catégorie </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700">
+              {{ element?.sousCategorie?.nom || '—' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Prix -->
+        <ng-container matColumnDef="prix">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Prix </th>
+          <td mat-cell *matCellDef="let element" class="whitespace-nowrap">
+            <span *ngIf="!element?.sansPrix" class="text-primary-600 font-semibold">
+              {{ element?.prixFormatte }}
+            </span>
+            <span *ngIf="element?.sansPrix" matTooltip="Aucun prix fixé — à négocier avec le prestataire"
+              class="inline-flex items-center gap-1 text-gray-400 italic text-sm">
+              <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:question-mark-circle'"></mat-icon>
+              Non défini
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Propriétaire -->
+        <ng-container matColumnDef="proprietaire">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Propriétaire </th>
+          <td mat-cell *matCellDef="let element">{{ element?.proprietaire?.nom || '—' }}</td>
+        </ng-container>
+
+        <!-- Colonne Contact -->
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Contact </th>
+          <td mat-cell *matCellDef="let element">{{ element?.proprietaire?.contact || '—' }}</td>
+        </ng-container>
+
+        <!-- Colonne Statut -->
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Statut </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700': element?.statut === 'Actives',
+                'bg-orange-100 text-orange-700': element?.statut === 'En attente',
+                'bg-red-100 text-red-700': element?.statut === 'Réfusées'
+              }">
+              {{ element?.statut || 'Actives' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Date annonce -->
+        <ng-container matColumnDef="dateCreation">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Date annonce </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.dateCreation ? (element.dateCreation | date:'dd/MM/yyyy HH:mm') : '—' }}
+          </td>
+        </ng-container>
+
+        <!-- Colonne Actions -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="action-column text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="voirDetail(element)">
+                <mat-icon>visibility</mat-icon>
+                <span>Voir le détail</span>
+              </button>
+              <button mat-menu-item (click)="modifier(element)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item *ngIf="element?.statut !== 'Actives'" (click)="valider(element)">
+                <mat-icon class="text-green-600">check_circle</mat-icon>
+                <span>Valider</span>
+              </button>
+              <button mat-menu-item *ngIf="element?.statut !== 'Réfusées'" (click)="refuser(element)">
+                <mat-icon class="text-orange-600">cancel</mat-icon>
+                <span>Refuser</span>
+              </button>
+              <button mat-menu-item class="text-warn" (click)="deleteElement(element)">
+                <mat-icon svgIcon="mat_outline:delete_forever"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800 text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-hover transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-secondary" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="icon-size-10 opacity-40" [svgIcon]="'heroicons_outline:inbox'"></mat-icon>
+              <span>Aucune annonce correspondant au filtre</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20, 25]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+</div>

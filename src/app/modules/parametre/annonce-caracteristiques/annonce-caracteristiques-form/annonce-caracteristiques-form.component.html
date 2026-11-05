@@ -1,0 +1,63 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-ken-800 text-on-primary">
+        <div class="text-lg font-medium flex flex-0 items-center justify-center text-white">
+            Formulaire des périodicités
+        </div>
+        <button mat-icon-button  [tabIndex]="-1">
+            <mat-icon class="text-current text-white" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+
+    <!-- Compose form -->
+    <form class="custom-form flex flex-col p-2 sm:p-4 flex-auto  overflow-y-auto" [formGroup]="dataSource">
+
+        <div>
+            <!-- Champ de Périodicité & Co Partie 1-->
+            <div>
+                <div class="w-full flex flex-col md:flex-row items-center gap-x-4">
+                    <mat-form-field class="w-full md:w-1/2">
+                        <mat-label>Nom </mat-label>
+                        <input matInput type="text" placeholder="nom" required [formControlName]="'nom'" />
+                        <mat-error>Ce champ est obligatoire</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="w-full flex flex-col md:flex-row items-center gap-x-4">
+                    <mat-form-field class="w-full md:w-1/2">
+                        <mat-label>Prenom </mat-label>
+                        <input matInput type="text" placeholder="prenoms" required [formControlName]="'prenoms'" />
+                        <mat-error>Ce champ est obligatoire</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field class="w-full md:w-1/2">
+                        <mat-label>competence </mat-label>
+                        <input matInput type="text" placeholder="competence" required disabled [formControlName]="'competence'" />
+                        <mat-error>Ce champ est obligatoire</mat-error>
+                </mat-form-field>
+
+            </div>
+        
+        </div>
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
+            <div class="-ml-2">
+              
+            </div>
+
+            <div class="flex items-center mt-4 p-2 m-2">
+                <button class="
+                sm:order-lasttext-[#fff]" mat-flat-button>
+                   Annuler
+                   <!-- {{ data.equipement ? "Modifier" : "Ajouter" }} -->
+               </button>
+                <button class="order-first sm:order-last bg-primary text-[#fff]" mat-flat-button>
+                    Ajouter
+                    <!-- {{ data.equipement ? "Modifier" : "Ajouter" }} -->
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>

@@ -1,0 +1,125 @@
+<!-- <div class="defaultTheme">
+	<mat-toolbar color="primary">
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+            
+            <mat-icon>font_download</mat-icon>
+            
+            <div class="mat-padding-small"></div>
+            <span fxFlex="20" style="padding:10px;">Personne</span>
+        </div>
+        <div fxLayout="row" fxFlex>
+        </div>
+        <div fxLayout="row">
+            <button (click)="close()"  mat-stroked-button mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>        
+        </div>
+    </mat-toolbar>
+	
+	<mat-card>
+		
+	  <mat-progress-bar *ngIf="inProgress" mode="indeterminate"></mat-progress-bar>
+  <div fxLayout="column">
+    
+        <table mat-table class="table-max-width w-full" [dataSource]="abonnementDataSource" matSort fxFlex>
+
+            <ng-container matColumnDef="raisonSocial">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Raison social </th>
+                <td mat-cell *matCellDef="let element">{{element.raisonSocial }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="nom">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Nom </th>
+                <td mat-cell *matCellDef="let element">{{element.nom }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="prenoms">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Prenoms </th>
+                <td mat-cell *matCellDef="let element">{{element.prenoms }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateNaissance">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Date naissance </th>
+                <td mat-cell *matCellDef="let element">{{element.dateNaissance }}</td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="contactSecond">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Contact second </th>
+                <td mat-cell *matCellDef="let element">{{element.contactSecond }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="adresseGeographique">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Adresse geographique </th>
+                <td mat-cell *matCellDef="let element">{{element.adresseGeographique }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="empty1">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Empty1 </th>
+                <td mat-cell *matCellDef="let element">{{element.empty1 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="empty2">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Empty2 </th>
+                <td mat-cell *matCellDef="let element">{{element.empty2 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="empty3">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Empty3 </th>
+                <td mat-cell *matCellDef="let element">{{element.empty3 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="empty4">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Empty4 </th>
+                <td mat-cell *matCellDef="let element">{{element.empty4 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="empty5">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Empty5 </th>
+                <td mat-cell *matCellDef="let element">{{element.empty5 }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="geler">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Geler </th>
+                <td mat-cell *matCellDef="let element">{{element.geler }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateCreation">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Date creation </th>
+                <td mat-cell *matCellDef="let element">{{element.dateCreation }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="utilisateurCreation">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Utilisateur creation </th>
+                <td mat-cell *matCellDef="let element">{{element.utilisateurCreation }}</td>
+            </ng-container>
+								 
+				  
+            <ng-container matColumnDef="action">
+              <th  mat-header-cell *matHeaderCellDef > action </th>
+              <td mat-cell *matCellDef="let element"  class="action-column">
+                <div fxLayout="row" >
+                  <button mat-icon-button  [matMenuTriggerFor]="menu" >
+                      <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button  mat-menu-item class="mat-small"><mat-icon>folder_open</mat-icon>Détail</button>
+                    <button  mat-menu-item class="mat-small"><mat-icon>folder_special</mat-icon>Autres...</button>
+                  </mat-menu>
+                </div>
+              </td>
+            </ng-container>
+          
+            <tr mat-header-row  *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+			
+		    <tr class="mat-row" *matNoDataRow>
+			  <td class="mat-cell" colspan="23">Aucune donnée correspondant au filtre  "{{input.value}}"</td>
+		    </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[8, 15, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+	</mat-card>
+</div> -->
+
+

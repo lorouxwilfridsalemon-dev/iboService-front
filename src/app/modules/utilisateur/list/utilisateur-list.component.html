@@ -1,0 +1,690 @@
+
+<!-- sans -->
+<!-- <div class="flex flex-col flex-auto min-w-0">
+  <div class="relative flex-0 py-8 px-4 sm:p-8 overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white opacity-10" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">
+        Utilisateurs
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 flex-auto sm:flex-initial"
+          [color]="'primary'">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Rechercher un utilisateur...">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <button (click)="getListeUtilisateurs()" mat-flat-button [color]="'accent'" matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+
+        <button (click)="ouvrirFormulaireCreation()" mat-flat-button [color]="'primary'">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+          <span class="ml-2 mr-1">Ajouter</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">TOTAL</p>
+          <p class="text-2xl font-bold mt-1">{{ total }}</p>
+        </div>
+        <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+          <mat-icon class="text-primary-600" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-green-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">ACTIFS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalActifs }}</p>
+        </div>
+        <div class="p-3 bg-green-50 dark:bg-green-900 rounded-full">
+          <mat-icon class="text-green-600">check_circle</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-orange-400">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">INACTIFS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalInactifs }}</p>
+        </div>
+        <div class="p-3 bg-orange-50 dark:bg-orange-900 rounded-full">
+          <mat-icon class="text-orange-500">block</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-purple-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">ADMINS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalAdmin }}</p>
+        </div>
+        <div class="p-3 bg-purple-50 dark:bg-purple-900 rounded-full">
+          <mat-icon class="text-purple-600">admin_panel_settings</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="w-full" [dataSource]="utilisateurDataSource" matSort>
+
+        <ng-container matColumnDef="photo">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Photo </th>
+          <td mat-cell *matCellDef="let element" class="py-2">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+              
+              <img *ngIf="element?.photo" [src]="urlPhoto(element.photo)" alt="Photo" class="w-full h-full object-cover">
+              <mat-icon *ngIf="!element?.photo" class="text-gray-400">person</mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Nom </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="font-medium">{{ element?.prenom }} {{ element?.nom }}</div>
+            <div class="text-xs text-gray-400">{{ element?.pseudo }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Email </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.email }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Contact </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.contact || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="profil">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Profil </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+              {{ element?.profil?.libelle || 'Utilisateur' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Statut </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700': element?.geler === 0,
+                'bg-red-100 text-red-700': element?.geler === 1
+              }">
+              {{ element?.geler === 0 ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateCreation">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Création </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="ouvrirFormulaireModification(element)">
+                <mat-icon class="text-blue-600" [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="activerDesactiver(element)">
+                <mat-icon [ngClass]="element?.geler === 0 ? 'text-orange-600' : 'text-green-600'">
+                  {{ element?.geler === 0 ? 'block' : 'check_circle' }}
+                </mat-icon>
+                <span>{{ element?.geler === 0 ? 'Désactiver' : 'Activer' }}</span>
+              </button>
+              <button mat-menu-item class="text-red-600" (click)="deleteElement(element)">
+                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800 text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-gray-500" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="text-6xl opacity-40" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+              <span>Aucun utilisateur trouvé</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+</div> -->
+
+<!-- avec -->
+<div class="flex flex-col flex-auto min-w-0">
+  <!-- En-tête avec fond bleu -->
+  <div class="relative flex-0 py-4 px-4 sm:p-4 bg-card items-center justify-center overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white opacity-10" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">
+        Utilisateurs
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <section class="chexbox-section">
+          <mat-radio-group [(ngModel)]="recensementPeriode" (change)="onPeriodChange()">
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" [checked]="recensementPeriode === 'jour'" value="jour">
+                &nbsp;&nbsp; Jour
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="semaine">
+                &nbsp;&nbsp; Semaine
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="mois">
+                &nbsp;&nbsp; Mois
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="annee">
+                &nbsp;&nbsp; Année
+              </mat-radio-button>
+            </button>
+          </mat-radio-group>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <!-- Section des filtres et statistiques -->
+  <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase">TOTAL</p>
+            <p class="text-2xl font-bold mt-1">{{ total }}</p>
+          </div>
+          <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+            <mat-icon class="text-primary-600" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+          </div>
+        </div>
+        <div class="mt-2">
+          <span class="text-xs text-gray-500">{{ getPeriodeTexte() }}</span>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-green-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase">ACTIFS</p>
+            <p class="text-2xl font-bold mt-1">{{ totalActifs }}</p>
+          </div>
+          <div class="p-3 bg-green-50 dark:bg-green-900 rounded-full">
+            <mat-icon class="text-green-600">check_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-orange-400">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase">INACTIFS</p>
+            <p class="text-2xl font-bold mt-1">{{ totalInactifs }}</p>
+          </div>
+          <div class="p-3 bg-orange-50 dark:bg-orange-900 rounded-full">
+            <mat-icon class="text-orange-500">block</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-purple-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase">ADMINS</p>
+            <p class="text-2xl font-bold mt-1">{{ totalAdmin }}</p>
+          </div>
+          <div class="p-3 bg-purple-50 dark:bg-purple-900 rounded-full">
+            <mat-icon class="text-purple-600">admin_panel_settings</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres de périodicité -->
+    <div class="flex flex-col sm:flex-row justify-between gap-4 items-end mt-4">
+      <form *ngIf="searchForm" [formGroup]="searchForm"
+        class="flex flex-wrap lg:flex-nowrap gap-4 items-end">
+
+        <!-- Champ DATE pour JOUR -->
+        <mat-form-field *ngIf="recensementPeriode === 'jour'" class="fuse-mat-dense" appearance="fill">
+          <mat-label>Choisir une date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dateJour">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Champ SEMAINE -->
+        <mat-form-field *ngIf="recensementPeriode === 'semaine'" class="fuse-mat-dense" appearance="fill" style="min-width: 200px;">
+          <mat-label>Semaine</mat-label>
+          <mat-select formControlName="semaine" (selectionChange)="onSemaineChange()">
+            <mat-option *ngFor="let semaine of ListeSemaineGeneral" [value]="semaine.IdSemaine">
+              Semaine {{semaine.NomSemaine}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ MOIS -->
+        <mat-form-field *ngIf="recensementPeriode === 'mois'" class="fuse-mat-dense" appearance="fill" style="min-width: 120px;">
+          <mat-label>Mois</mat-label>
+          <mat-select formControlName="mois">
+            <mat-option *ngFor="let moi of mois" [value]="moi.id">{{ moi.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ ANNÉE -->
+        <mat-form-field *ngIf="recensementPeriode !== 'jour'" class="fuse-mat-dense" appearance="fill" style="min-width: 100px;">
+          <mat-label>Année</mat-label>
+          <mat-select formControlName="annee">
+            <mat-option *ngFor="let annee of annees" [value]="annee.id">{{ annee.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button class="text-white self-center" mat-flat-button color="primary" (click)="applyPeriodFilter()">
+          <mat-icon [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </button>
+      </form>
+
+      <!-- Recherche et actions -->
+      <div class="flex flex-wrap items-center gap-3">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+          <input matInput [formControl]="searchControl" placeholder="Rechercher un utilisateur..." (keyup)="applyFilter($event)">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <!-- ✅ Bouton Export -->
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="exportMenu" class="h-[56px]">
+          <mat-icon svgIcon="heroicons_solid:save"></mat-icon>
+          <span class="ml-2">Exporter</span>
+        </button>
+
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="exportExcel()">
+            <mat-icon svgIcon="heroicons_outline:document"></mat-icon>
+            <span>Excel</span>
+          </button>
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+            <span>PDF</span>
+          </button>
+        </mat-menu>
+
+        <button (click)="loadUtilisateurs()" mat-flat-button [color]="'accent'" matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+
+        <button (click)="ouvrirFormulaireCreation()" mat-flat-button [color]="'primary'">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+          <span class="ml-2 mr-1">Ajouter</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="w-full" [dataSource]="utilisateurDataSource" matSort>
+
+        <ng-container matColumnDef="photo">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Photo </th>
+          <td mat-cell *matCellDef="let element" class="py-2">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+              <img *ngIf="element?.photo" [src]="urlPhoto(element.photo)" alt="Photo" class="w-full h-full object-cover">
+              <mat-icon *ngIf="!element?.photo" class="text-gray-400">person</mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Nom </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="font-medium">{{ element?.prenom }} {{ element?.nom }}</div>
+            <div class="text-xs text-gray-400">{{ element?.pseudo }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Email </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.email }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Contact </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.contact || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="profil">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Profil </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+              {{ element?.profil?.libelle || 'Utilisateur' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Statut </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700': element?.geler === 0,
+                'bg-red-100 text-red-700': element?.geler === 1
+              }">
+              {{ element?.geler === 0 ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateCreation">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Création </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="ouvrirFormulaireModification(element)">
+                <mat-icon class="text-blue-600" [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="activerDesactiver(element)">
+                <mat-icon [ngClass]="element?.geler === 0 ? 'text-orange-600' : 'text-green-600'">
+                  {{ element?.geler === 0 ? 'block' : 'check_circle' }}
+                </mat-icon>
+                <span>{{ element?.geler === 0 ? 'Désactiver' : 'Activer' }}</span>
+              </button>
+              <button mat-menu-item class="text-red-600" (click)="deleteElement(element)">
+                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800 text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-gray-500" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="text-6xl opacity-40" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+              <span>Aucun utilisateur trouvé</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- <div class="flex flex-col flex-auto min-w-0">
+  <div class="relative flex-0 py-8 px-4 sm:p-8 overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white opacity-10" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-white">
+        Utilisateurs
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 flex-auto sm:flex-initial"
+          [color]="'primary'">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Rechercher un utilisateur...">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <button (click)="getListeUtilisateurs()" mat-flat-button [color]="'accent'" matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+
+        <button (click)="ouvrirFormulaireCreation()" mat-flat-button [color]="'primary'">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+          <span class="ml-2 mr-1">Ajouter</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 sm:p-6 bg-gray-50 dark:bg-gray-900">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">TOTAL</p>
+          <p class="text-2xl font-bold mt-1">{{ total }}</p>
+        </div>
+        <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+          <mat-icon class="text-primary-600" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-green-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">ACTIFS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalActifs }}</p>
+        </div>
+        <div class="p-3 bg-green-50 dark:bg-green-900 rounded-full">
+          <mat-icon class="text-green-600">check_circle</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-orange-400">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">INACTIFS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalInactifs }}</p>
+        </div>
+        <div class="p-3 bg-orange-50 dark:bg-orange-900 rounded-full">
+          <mat-icon class="text-orange-500">block</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-purple-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase">ADMINS</p>
+          <p class="text-2xl font-bold mt-1">{{ totalAdmin }}</p>
+        </div>
+        <div class="p-3 bg-purple-50 dark:bg-purple-900 rounded-full">
+          <mat-icon class="text-purple-600">admin_panel_settings</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="w-full" [dataSource]="utilisateurDataSource" matSort>
+
+        <ng-container matColumnDef="photo">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Photo </th>
+          <td mat-cell *matCellDef="let element" class="py-2">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+              <img *ngIf="element?.photo" [src]="element.photo" alt="Photo" class="w-full h-full object-cover">
+              <mat-icon *ngIf="!element?.photo" class="text-gray-400">person</mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Nom </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="font-medium">{{ element?.prenom }} {{ element?.nom }}</div>
+            <div class="text-xs text-gray-400">{{ element?.pseudo }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Email </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.email }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Contact </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.contact || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="profil">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Profil </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+              {{ element?.profil?.libelle || 'Utilisateur' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Statut </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 text-green-700': element?.geler === 0,
+                'bg-red-100 text-red-700': element?.geler === 1
+              }">
+              {{ element?.geler === 0 ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateCreation">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Création </th>
+          <td mat-cell *matCellDef="let element" class="text-sm">
+            {{ element?.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="ouvrirFormulaireModification(element)">
+                <mat-icon class="text-blue-600" [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="activerDesactiver(element)">
+                <mat-icon [ngClass]="element?.geler === 0 ? 'text-orange-600' : 'text-green-600'">
+                  {{ element?.geler === 0 ? 'block' : 'check_circle' }}
+                </mat-icon>
+                <span>{{ element?.geler === 0 ? 'Désactiver' : 'Activer' }}</span>
+              </button>
+              <button mat-menu-item class="text-red-600" (click)="deleteElement(element)">
+                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800 text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-gray-500" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="text-6xl opacity-40" [svgIcon]="'heroicons_outline:users'"></mat-icon>
+              <span>Aucun utilisateur trouvé</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+</div> -->

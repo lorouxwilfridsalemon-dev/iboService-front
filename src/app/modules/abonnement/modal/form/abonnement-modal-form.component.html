@@ -1,0 +1,88 @@
+
+<div class="flex flex-col max-h-screen -m-6">
+  
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+        <div class="text-lg font-medium">Formulaire de genre de personne</div>
+      <button
+      (click)="close()"
+             mat-icon-button
+            [tabIndex]="-1">
+            <mat-icon
+               class="text-current"
+               [svgIcon]="'heroicons_outline:x'"> 
+           </mat-icon>
+      </button>
+    </div>
+
+ <form  [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto">
+
+    <tr>
+         <!-- <td>
+			<mat-form-field id="full-width" class="fuse-mat min-w-90" >
+				<mat-label>id</mat-label>
+				<input matInput type="text" placeholder="id" required formControlName="id" id="full-width">
+				<mat-error>
+				  <span *ngIf="form.controls.id.invalid">{{form.controls.id.errors}}</span>
+				</mat-error>
+			  </mat-form-field>
+    </td> -->
+    <mat-form-field class="fuse-mat min-w-full">
+			<mat-label>libelle</mat-label>
+			<input matInput type="text" placeholder="libelle" formControlName="libelle" >
+			<mat-error>
+			  <span *ngIf="form.controls.libelle.invalid">{{form.controls.libelle.errors}}</span>
+			</mat-error>
+		  </mat-form-field>
+
+      <!-- <mat-form-field class="fuse-mat min-w-full">
+        <mat-label>Description</mat-label><mat-error>
+          <span *ngIf="form.controls.description.invalid">{{form.controls.description.errors}}</span>
+        </mat-error>
+        <textarea matInput placeholder="Ex...."></textarea>
+      </mat-form-field> -->
+
+   
+      <mat-form-field class="fuse-mat min-w-full">
+        <mat-label>Description</mat-label>
+        <textarea matInput placeholder="Ex...." formControlName="description"></textarea>
+        <mat-error *ngIf="form.controls.description.invalid && (form.controls.description.dirty || form.controls.description.touched)">
+          <span *ngIf="form.controls.description.hasError('required')">La description est requise.</span>
+          <span *ngIf="form.controls.description.hasError('minlength')">La description doit comporter au moins 3 caractères.</span>
+        </mat-error>
+      </mat-form-field>
+
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-end">
+
+          <button
+              
+              (click)="close()"
+              class="my-4 border border-solid border-black-500 border-1"
+              mat-flat-button
+               [color]="'white'"
+
+            >
+             Annuler
+        </button>
+
+       <button
+              
+             class="ml-2" 
+             mat-flat-button
+             [color]="'primary'"
+			 [disabled]="form.invalid"
+
+         >
+          Ajouter
+
+        </button>
+</div>
+</form>
+</div>
+
+
+
+
+  
+  
+

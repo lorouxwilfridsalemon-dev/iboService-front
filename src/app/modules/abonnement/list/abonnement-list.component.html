@@ -1,0 +1,382 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <!-- En-tête avec fond bleu -->
+  <div class="relative flex-0 py-4 px-4 sm:p-4 bg-card items-center justify-center overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white-900 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div style="color: #33D4FF;" class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+        Gestion des abonnements
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <section class="chexbox-section">
+          <mat-radio-group [(ngModel)]="recensementPeriode" (change)="onPeriodChange()">
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" [checked]="recensementPeriode === 'jour'" value="jour">
+                &nbsp;&nbsp; Jour
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="semaine">
+                &nbsp;&nbsp; Semaine
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="mois">
+                &nbsp;&nbsp; Mois
+              </mat-radio-button>
+            </button>
+            <button mat-button class="m-1 leading-5 text-white">
+              <mat-radio-button class="chexbox font-medium" value="annee">
+                &nbsp;&nbsp; Année
+              </mat-radio-button>
+            </button>
+          </mat-radio-group>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <!-- Section des filtres et statistiques -->
+  <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+
+    <!-- ============================================================ -->
+    <!-- ✅ CARTES DE STATISTIQUES — 5 cartes maintenant              -->
+    <!-- ============================================================ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+
+      <!-- TOTAL -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">TOTAL</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ total }}</p>
+          </div>
+          <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+            <mat-icon class="text-primary-600 dark:text-primary-300"
+              [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+          </div>
+        </div>
+        <div class="mt-2">
+          <span class="text-xs text-gray-500 dark:text-gray-400">{{ getPeriodeTexte() }}</span>
+        </div>
+      </div>
+
+      <!-- ✅ NOUVELLE CARTE — MONTANT TOTAL -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-emerald-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">MONTANT TOTAL</p>
+            <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 truncate">
+              {{ formatMontantGlobal(totalMontant) }} <span class="text-sm">XOF</span>
+            </p>
+          </div>
+          <div class="p-3 bg-emerald-50 dark:bg-emerald-900 rounded-full flex-shrink-0">
+            <mat-icon class="text-emerald-600 dark:text-emerald-300"
+              [svgIcon]="'heroicons_outline:currency-dollar'"></mat-icon>
+          </div>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+          <span class="text-xs text-orange-500">
+            En attente: {{ formatMontantGlobal(totalMontantEnAttente) }}
+          </span>
+          <span class="text-xs text-green-500">
+            Actifs: {{ formatMontantGlobal(totalMontantActifs) }}
+          </span>
+          <span class="text-xs text-red-500">
+            Annulés: {{ formatMontantGlobal(totalMontantAnnules) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- EN ATTENTE -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-orange-400 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">EN ATTENTE</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ totalEnAttente }}</p>
+          </div>
+          <div class="p-3 bg-orange-50 dark:bg-orange-900 rounded-full">
+            <mat-icon class="text-orange-500">hourglass_bottom</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIFS -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-green-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">ACTIFS</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ totalActifs }}</p>
+          </div>
+          <div class="p-3 bg-green-50 dark:bg-green-900 rounded-full">
+            <mat-icon class="text-green-600">check_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANNULÉS -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-red-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">ANNULÉS</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ totalAnnules }}</p>
+          </div>
+          <div class="p-3 bg-red-50 dark:bg-red-900 rounded-full">
+            <mat-icon class="text-red-500">cancel</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres de périodicité -->
+    <div class="flex flex-col sm:flex-row justify-between gap-4 items-end mt-4">
+      <form *ngIf="searchForm" [formGroup]="searchForm" class="flex flex-wrap lg:flex-nowrap gap-4 items-end">
+
+        <!-- Champ DATE pour JOUR -->
+        <mat-form-field *ngIf="recensementPeriode === 'jour'" class="fuse-mat-dense" appearance="fill">
+          <mat-label>Choisir une date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dateJour">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Champ SEMAINE -->
+        <mat-form-field *ngIf="recensementPeriode === 'semaine'" class="fuse-mat-dense" appearance="fill"
+          style="min-width: 200px;">
+          <mat-label>Semaine</mat-label>
+          <mat-select formControlName="semaine" (selectionChange)="onSemaineChange()">
+            <mat-option *ngFor="let semaine of ListeSemaineGeneral" [value]="semaine.IdSemaine">
+              Semaine {{semaine.NomSemaine}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ MOIS -->
+        <mat-form-field *ngIf="recensementPeriode === 'mois'" class="fuse-mat-dense" appearance="fill"
+          style="min-width: 120px;">
+          <mat-label>Mois</mat-label>
+          <mat-select formControlName="mois">
+            <mat-option *ngFor="let moi of mois" [value]="moi.id">{{ moi.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ ANNÉE -->
+        <mat-form-field *ngIf="recensementPeriode !== 'jour'" class="fuse-mat-dense" appearance="fill"
+          style="min-width: 100px;">
+          <mat-label>Année</mat-label>
+          <mat-select formControlName="annee">
+            <mat-option *ngFor="let annee of annees" [value]="annee.id">{{ annee.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button class="text-white self-center" mat-flat-button color="primary" (click)="applyPeriodFilter()">
+          <mat-icon [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </button>
+      </form>
+
+      <!-- Recherche et actions -->
+      <div class="flex flex-wrap items-center gap-3">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+          <input matInput [formControl]="searchControl" placeholder="Rechercher" (keyup)="applyFilter($event)">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <!-- Bouton Export -->
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="exportMenu" class="h-[56px]">
+          <mat-icon svgIcon="heroicons_solid:save"></mat-icon>
+          <span class="ml-2">Exporter</span>
+        </button>
+
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item (click)="exportExcel()">
+            <mat-icon svgIcon="heroicons_outline:document"></mat-icon>
+            <span>Excel</span>
+          </button>
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+            <span>PDF</span>
+          </button>
+        </mat-menu>
+
+        <button (click)="loadAbonnements()" class="bg-accent-300 text-black" mat-flat-button [color]="'accent'"
+          matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+
+        <button (click)="ouvrirFormulaireCreation()" mat-flat-button [color]="'primary'">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+          <span class="ml-2 mr-1">Ajouter</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="table-max-width w-full" [dataSource]="abonnementDataSource" matSort>
+
+        <!-- Référence -->
+        <ng-container matColumnDef="reference">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Référence </th>
+          <td mat-cell *matCellDef="let element" class="font-mono text-sm font-medium">
+            {{ element?.reference || '—' }}
+          </td>
+        </ng-container>
+
+        <!-- Utilisateur -->
+        <ng-container matColumnDef="utilisateur">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Utilisateur </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flex items-center gap-2">
+              <!-- Avatar avec initiales -->
+              <div
+                class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-xs font-bold text-primary-700 dark:text-primary-300 flex-shrink-0">
+                {{ (element?.utilisateur?.prenom?.[0] || '') + (element?.utilisateur?.nom?.[0] || '') | uppercase }}
+              </div>
+              <div class="min-w-0">
+                <div class="font-medium truncate">
+                  {{ element?.utilisateur?.prenom }} {{ element?.utilisateur?.nom || '—' }}
+                </div>
+                <div class="text-xs text-gray-400 truncate">
+                  {{ element?.utilisateur?.contact || element?.utilisateur?.email || '' }}
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Plan -->
+        <ng-container matColumnDef="plan">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Plan </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="font-medium">{{ element?.plan?.nom || '—' }}</div>
+            <div class="text-xs text-gray-400">{{ element?.plan?.code }}</div>
+          </td>
+        </ng-container>
+
+        <!-- ✅ Type de facturation — support de `annuelle` -->
+        <ng-container matColumnDef="typeFacturation">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Type </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
+                'bg-gray-100 text-gray-700':      element?.typeFacturation === 'gratuit',
+                'bg-blue-100 text-blue-700':      element?.typeFacturation === 'mensuel',
+                'bg-purple-100 text-purple-700':  element?.typeFacturation === 'a_vie',
+                'bg-teal-100 text-teal-700':      element?.typeFacturation === 'annuelle'
+              }">
+              {{ getTypeFacturationLabel(element?.typeFacturation) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Dates -->
+        <ng-container matColumnDef="dates">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Dates </th>
+          <td mat-cell *matCellDef="let element" class="whitespace-nowrap text-sm">
+            <div>{{ element?.dateDebut | date:'dd/MM/yy' }}</div>
+            <div class="text-xs text-gray-400" *ngIf="element?.dateFin">
+              → {{ element?.dateFin | date:'dd/MM/yy' }}
+            </div>
+            <div class="text-xs text-green-600 font-medium"
+              *ngIf="!element?.dateFin && element?.typeFacturation === 'a_vie'">
+              À vie
+            </div>
+            <div class="text-xs text-teal-600 font-medium"
+              *ngIf="!element?.dateFin && element?.typeFacturation === 'annuelle'">
+              Annuelle
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Montant -->
+        <ng-container matColumnDef="montant">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Montant </th>
+          <td mat-cell *matCellDef="let element" class="text-primary-600 font-semibold whitespace-nowrap">
+            {{ element?.montantPaye | number:'1.0-0' }} {{ element?.devise || 'XOF' }}
+          </td>
+        </ng-container>
+
+        <!-- Statut -->
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Statut </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
+                'bg-orange-100 text-orange-700': element?.statut === 'en_attente',
+                'bg-green-100 text-green-700':   element?.statut === 'actif',
+                'bg-gray-100 text-gray-700':     element?.statut === 'expire',
+                'bg-red-100 text-red-700':       element?.statut === 'annule',
+                'bg-yellow-100 text-yellow-700': element?.statut === 'suspendu'
+              }">
+              {{ getStatutLabel(element?.statut) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Compteurs (annonces / boosts) -->
+        <ng-container matColumnDef="compteurs">
+          <th mat-header-cell *matHeaderCellDef class="text-white"> Utilisation </th>
+          <td mat-cell *matCellDef="let element" class="text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap">
+            <div>📢 {{ element?.compteurs?.annoncesUtilisees ?? 0 }} annonces</div>
+            <div>🚀 {{ element?.compteurs?.boostsUtilises ?? 0 }} boosts</div>
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="action-column text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item *ngIf="element?.statut === 'en_attente'" (click)="activer(element)">
+                <mat-icon class="text-green-600">check_circle</mat-icon>
+                <span>Activer</span>
+              </button>
+              <button mat-menu-item
+                *ngIf="element?.statut === 'actif' && element?.typeFacturation !== 'a_vie'"
+                (click)="annuler(element)">
+                <mat-icon class="text-orange-600">cancel</mat-icon>
+                <span>Annuler</span>
+              </button>
+              <button mat-menu-item class="text-warn" (click)="deleteElement(element)">
+                <mat-icon svgIcon="mat_outline:delete_forever"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800 text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-hover transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-secondary" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="icon-size-10 opacity-40" [svgIcon]="'heroicons_outline:inbox'"></mat-icon>
+              <span>Aucun abonnement correspondant au filtre</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 15, 20, 25]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+</div> 

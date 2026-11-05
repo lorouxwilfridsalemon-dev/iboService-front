@@ -1,0 +1,365 @@
+
+
+
+<div class="flex flex-col flex-auto min-w-0 bg-gray-50 dark:bg-gray-900">
+
+  <!-- ============================================================ -->
+  <!-- BANDEAU D'ACCUEIL                                             -->
+  <!-- ============================================================ -->
+  <div class="relative flex-0 py-10 px-4 sm:py-14 sm:px-8 overflow-hidden bg-primary-800 dark">
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white-700 opacity-20" fill="none" stroke="currentColor" stroke-width="90">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-primary-500/20 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 right-10 w-80 h-80 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none"></div>
+
+    <div class="relative flex flex-col items-center text-center max-w-5xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm ring-1 ring-white/20 text-white/80 text-xs font-semibold uppercase tracking-wider mb-4">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+        </span>
+        Plateforme active
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        IBO Service CI
+      </h1>
+      <p class="text-white/70 text-sm sm:text-base mt-3 max-w-2xl">
+        Plateforme de gestion des annonces, réservations et paramètres pour les prestataires et administrateurs.
+      </p>
+
+      <!-- Boutons d'action dans le bandeau -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
+        <a routerLink="/dashboard"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-primary-700 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg shadow-black/10">
+          <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:chart-pie'"></mat-icon>
+          Voir le dashboard
+        </a>
+        <a routerLink="/abonnement"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm text-white font-semibold text-sm ring-1 ring-white/20 hover:bg-white/20 transition-all">
+          <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+          Abonnements
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <!-- ============================================================ -->
+  <!-- CONTENU PRINCIPAL                                             -->
+  <!-- ============================================================ -->
+  <div class="flex flex-col gap-8 p-4 sm:p-6 max-w-6xl mx-auto w-full">
+
+    <!-- ============================================================ -->
+    <!-- THÉMATIQUES PRINCIPALES                                       -->
+    <!-- ============================================================ -->
+    <div>
+      <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-1 h-5 rounded-full bg-gradient-to-b from-primary-400 to-primary-600"></div>
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white">Thématiques principales</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+
+        <!-- Annonces -->
+        <a routerLink="/annonce"
+          class="group relative overflow-hidden bg-blue-50 dark:bg-blue-900/30 rounded-2xl p-5 border-l-4 border-blue-500 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg group-hover:scale-110 transition-transform">
+              <mat-icon class="text-blue-600 dark:text-blue-300">campaign</mat-icon>
+            </div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Annonces</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            Gérez les annonces publiées, modérez les contenus et suivez leur cycle de vie.
+          </p>
+          <div class="flex items-center gap-1 text-sm font-medium text-blue-600 group-hover:gap-2 transition-all">
+            Accéder <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+          </div>
+        </a>
+
+        <!-- Réservations -->
+        <a routerLink="/reservation"
+          class="group relative overflow-hidden bg-green-50 dark:bg-green-900/30 rounded-2xl p-5 border-l-4 border-green-500 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-green-100 dark:bg-green-800 rounded-lg group-hover:scale-110 transition-transform">
+              <mat-icon class="text-green-600 dark:text-green-300">calendar_today</mat-icon>
+            </div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Réservations</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            Suivez les réservations en cours, validez ou annulez les demandes des clients.
+          </p>
+          <div class="flex items-center gap-1 text-sm font-medium text-green-600 group-hover:gap-2 transition-all">
+            Accéder <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+          </div>
+        </a>
+
+        <!-- ✅ Abonnements (NOUVEAU) -->
+        <a routerLink="/abonnement"
+          class="group relative overflow-hidden bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl p-5 border-l-4 border-emerald-500 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-emerald-100 dark:bg-emerald-800 rounded-lg group-hover:scale-110 transition-transform">
+              <mat-icon class="text-emerald-600 dark:text-emerald-300">card_membership</mat-icon>
+            </div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Abonnements</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            Suivez les abonnements actifs, les paiements et les souscriptions des utilisateurs.
+          </p>
+          <div class="flex items-center gap-1 text-sm font-medium text-emerald-600 group-hover:gap-2 transition-all">
+            Accéder <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+          </div>
+        </a>
+
+        <!-- ✅ Plans d'abonnement (NOUVEAU) -->
+        <a routerLink="/plan_abonnement"
+          class="group relative overflow-hidden bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl p-5 border-l-4 border-indigo-500 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg group-hover:scale-110 transition-transform">
+              <mat-icon class="text-indigo-600 dark:text-indigo-300">workspace_premium</mat-icon>
+            </div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Plans d'abonnement</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            Configurez les plans, les tarifs et les avantages proposés aux utilisateurs.
+          </p>
+          <div class="flex items-center gap-1 text-sm font-medium text-indigo-600 group-hover:gap-2 transition-all">
+            Accéder <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+          </div>
+        </a>
+
+        <!-- Paramètres -->
+        <a routerLink="/parametre"
+          class="group relative overflow-hidden bg-purple-50 dark:bg-purple-900/30 rounded-2xl p-5 border-l-4 border-purple-500 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg group-hover:scale-110 transition-transform">
+              <mat-icon class="text-purple-600 dark:text-purple-300">settings</mat-icon>
+            </div>
+            <h3 class="font-bold text-gray-800 dark:text-white">Paramètres</h3>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            Configurez les catégories, sous-catégories, caractéristiques et profils utilisateurs.
+          </p>
+          <div class="flex items-center gap-1 text-sm font-medium text-purple-600 group-hover:gap-2 transition-all">
+            Accéder <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STATISTIQUES                                                  -->
+    <!-- ============================================================ -->
+    <div>
+      <div class="flex items-center justify-between gap-2.5 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-1 h-5 rounded-full bg-gradient-to-b from-primary-400 to-primary-600"></div>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-white">Statistiques</h2>
+        </div>
+        <a routerLink="/dashboard"
+          class="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+          Voir en détail <mat-icon class="icon-size-4">arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Annonces -->
+        <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border-l-4 border-blue-500 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between mb-3">
+            <div class="p-2.5 bg-blue-100 dark:bg-blue-900/50 rounded-xl group-hover:scale-110 transition-transform">
+              <mat-icon class="text-blue-600 dark:text-blue-300">campaign</mat-icon>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+              Annonces
+            </span>
+          </div>
+          <p class="text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight tabular-nums">{{ totalAnnonces }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total sur la plateforme</p>
+
+          <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+            <span class="text-gray-500">Actives</span>
+            <span class="font-bold text-blue-600 tabular-nums">{{ annoncesActives }} ({{ pourcentage(annoncesActives, totalAnnonces) }}%)</span>
+          </div>
+        </div>
+
+        <!-- Réservations -->
+        <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border-l-4 border-green-500 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between mb-3">
+            <div class="p-2.5 bg-green-100 dark:bg-green-900/50 rounded-xl group-hover:scale-110 transition-transform">
+              <mat-icon class="text-green-600 dark:text-green-300">calendar_today</mat-icon>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 uppercase tracking-wider">
+              Réservations
+            </span>
+          </div>
+          <p class="text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight tabular-nums">{{ totalReservations }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total sur la plateforme</p>
+
+          <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+            <span class="text-gray-500">Confirmées</span>
+            <span class="font-bold text-green-600 tabular-nums">{{ reservationsConfirmees }}</span>
+          </div>
+        </div>
+
+        <!-- Catégories -->
+        <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border-l-4 border-amber-500 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between mb-3">
+            <div class="p-2.5 bg-amber-100 dark:bg-amber-900/50 rounded-xl group-hover:scale-110 transition-transform">
+              <mat-icon class="text-amber-600 dark:text-amber-300">folder</mat-icon>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+              Catégories
+            </span>
+          </div>
+          <p class="text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight tabular-nums">{{ totalCategories }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Catégories configurées</p>
+        </div>
+
+        <!-- Utilisateurs -->
+        <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border-l-4 border-purple-500 hover:shadow-lg transition-all duration-200">
+          <div class="flex items-center justify-between mb-3">
+            <div class="p-2.5 bg-purple-100 dark:bg-purple-900/50 rounded-xl group-hover:scale-110 transition-transform">
+              <mat-icon class="text-purple-600 dark:text-purple-300">people</mat-icon>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+              Utilisateurs
+            </span>
+          </div>
+          <p class="text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight tabular-nums">{{ totalUtilisateurs }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Comptes enregistrés</p>
+
+          <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs">
+            <span class="text-gray-500">Actifs</span>
+            <span class="font-bold text-purple-600 tabular-nums">{{ utilisateursActifs }} ({{ pourcentage(utilisateursActifs, totalUtilisateurs) }}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ACTIONS RAPIDES                                               -->
+    <!-- ============================================================ -->
+    <div>
+      <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-1 h-5 rounded-full bg-gradient-to-b from-primary-400 to-primary-600"></div>
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white">Actions rapides</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+        <!-- Nouvelle annonce -->
+        <a routerLink="/annonce/ajouter"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-primary-600 dark:text-primary-300 icon-size-5" [svgIcon]="'heroicons_outline:plus-circle'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Nouvelle annonce</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Publier une annonce</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- Dashboard -->
+        <a routerLink="/dashboard"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-primary-600 dark:text-primary-300 icon-size-5" [svgIcon]="'heroicons_outline:chart-pie'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Dashboard</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Statistiques globales</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- ✅ Abonnements (NOUVEAU) -->
+        <a routerLink="/abonnement"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-emerald-600 dark:text-emerald-300 icon-size-5" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Abonnements</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Gérer les abonnements</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- ✅ Plans d'abonnement (NOUVEAU) -->
+        <a routerLink="/plan_abonnement"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-indigo-600 dark:text-indigo-300 icon-size-5" [svgIcon]="'heroicons_outline:workspace-premium'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Plans d'abonnement</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Configurer les plans</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- Gérer catégories -->
+        <a routerLink="/categories"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-amber-600 dark:text-amber-300 icon-size-5" [svgIcon]="'heroicons_outline:folder'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Gérer catégories</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Organiser les catégories</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- Voir réservations -->
+        <a routerLink="/reservation"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-green-600 dark:text-green-300 icon-size-5" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Voir réservations</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Suivre les demandes</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-green-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- Gérer utilisateurs -->
+        <a routerLink="/utilisateur"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-purple-600 dark:text-purple-300 icon-size-5" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Gérer utilisateurs</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Comptes et rôles</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-purple-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+
+        <!-- Paramètres -->
+        <a routerLink="/parametre"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md transition-all duration-200">
+          <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:scale-110 transition-transform">
+            <mat-icon class="text-gray-600 dark:text-gray-300 icon-size-5" [svgIcon]="'heroicons_outline:cog'"></mat-icon>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-gray-800 dark:text-white text-sm">Paramètres</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Configuration générale</p>
+          </div>
+          <mat-icon class="text-gray-300 ml-auto icon-size-5 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all">chevron_right</mat-icon>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div> 

@@ -1,0 +1,13 @@
+
+:host {
+  display: block;
+}
+
+mat-dialog-content {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+mat-spinner {
+  display: inline-block;
+}

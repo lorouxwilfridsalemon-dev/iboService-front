@@ -1,0 +1,97 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <div class="relative flex-0 py-8 px-4 sm:p-8 overflow-hidden bg-ken-800 dark">
+
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg>
+
+
+    <div>
+
+      <div class="relative flex flex-0 items-start  justify-between">
+        <div style="color: #33D4FF;" class="mt-1 text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+          Statuts
+        </div>
+
+        <div class="flex justify-end items-end justify-end text-1xl font-bold tracking-tight">
+          <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64" [color]="'primary'">
+              <input matInput (keyup)="applyFilter($event)" placeholder="Recherche">
+              <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+            </mat-form-field>
+
+            <button (click)="getListeStatut()" class="ml-4 bg-accent-300 text-black" mat-flat-button [color]="'accent'">
+              <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+              <span class="ml-2 mr-1">Actualiser</span>
+            </button>
+
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="flex justify-end">
+    <button (click)="openEditStatutForm(null)" id="btn-ajout" class="mr-15 my-2 mx-25" mat-flat-button
+      [color]="'primary'">
+      <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+      <span class="ml-2 mr-1">Ajouter</span>
+    </button> 
+  </div>
+
+  <div class="flex-0 p-2 sm:p-2">
+
+    <table mat-table class="table-max-width w-full " [dataSource]="statutDataSource" matSort fxFlex>
+      <ng-container matColumnDef="libelle">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Libellé</th>
+        <td mat-cell *matCellDef="let element">{{element?.libelle }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dateCreation">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Date de creation</th>
+        <td mat-cell *matCellDef="let element">{{element?.dateCreation | date:'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="text-white"> action </th>
+        <td mat-cell *matCellDef="let element" class="action-column">
+          <div fxLayout="row">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <!-- <button  mat-menu-item class="mat-small"><mat-icon>folder_open</mat-icon>Détail</button> -->
+              <button mat-menu-item class="mat-small"
+                (click)="openEditStatutForm(element)"><mat-icon>folder_special</mat-icon>Modifier</button>
+              <button mat-menu-item class="mat-small" (click)="deleteStatut(element)"><mat-icon
+                  svgIcon="mat_outline:delete_forever"></mat-icon>Supprimer</button>
+            </mat-menu>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-accent  text-white "></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell  text-center" colspan="23">Aucune donnée correspondant au filtre</td>
+      </tr>
+    </table>
+  </div>
+
+  <div>
+    <mat-paginator [pageSizeOptions]="[4, 8, 15]" showFirstLastButtons
+      class="fixed bottom-0 w-full   rounded"></mat-paginator>
+  </div>
+
+</div>

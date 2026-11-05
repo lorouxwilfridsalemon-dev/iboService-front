@@ -1,0 +1,191 @@
+<div class="flex flex-col max-h-screen -m-6">
+
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:eye'"></mat-icon>
+      <div class="text-lg font-medium">Détail de l'annonce</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <div class="p-6 overflow-y-auto space-y-5">
+
+    <!-- ✅ AJOUT : galerie d'images (au lieu d'une seule photo) -->
+    <div *ngIf="data?.images?.length > 0" class="grid grid-cols-3 gap-2 rounded-xl overflow-hidden">
+      <img *ngFor="let img of data.images.slice(0, 3)" [src]="baseUrl + '/files/annonces/' + img.nom"
+        alt="" class="w-full h-28 object-cover rounded-lg">
+    </div>
+
+    <!-- Titre + statut -->
+    <div class="flex items-start justify-between gap-3">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ data?.titre }}</h2>
+      <span class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
+        [ngClass]="{
+          'bg-green-100 text-green-700': data?.statut === 'Actives',
+          'bg-orange-100 text-orange-700': data?.statut === 'En attente',
+          'bg-red-100 text-red-700': data?.statut === 'Réfusées'
+        }">
+        {{ data?.statut || 'Actives' }}
+      </span>
+    </div>
+
+    <!-- Catégorie / sous-catégorie -->
+    <div class="flex flex-wrap gap-2">
+      <span *ngIf="data?.categorie?.nom" class="px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700">
+        {{ data.categorie.nom }}
+      </span>
+      <span *ngIf="data?.sousCategorie?.nom" class="px-2 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700">
+        {{ data.sousCategorie.nom }}
+      </span>
+    </div>
+
+    <!-- Prix -->
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-secondary icon-size-5" [svgIcon]="'heroicons_outline:cash'"></mat-icon>
+      <span *ngIf="!data?.sansPrix" class="font-semibold text-primary-600 text-lg">{{ data?.prixFormatte }}</span>
+      <span *ngIf="data?.sansPrix" class="italic text-gray-400 flex items-center gap-1">
+        <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:question-mark-circle'"></mat-icon>
+        Prix non défini — à négocier
+      </span>
+    </div>
+
+    <!-- Adresse -->
+    <div *ngIf="data?.adresse" class="flex items-start gap-2">
+      <mat-icon class="text-secondary icon-size-5 mt-0.5" [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
+      <span class="text-gray-700 dark:text-gray-300">{{ data.adresse }}</span>
+    </div>
+
+    <div *ngIf="data?.latitude && data?.longitude" class="flex items-center gap-2 text-sm text-gray-500">
+      <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:globe-alt'"></mat-icon>
+      Lat: {{ data.latitude }} · Long: {{ data.longitude }}
+    </div>
+
+    <div *ngIf="data?.typeLocation" class="flex items-center gap-2">
+      <mat-icon class="text-secondary icon-size-5" [svgIcon]="'heroicons_outline:home'"></mat-icon>
+      <span class="text-gray-700 dark:text-gray-300">Type : {{ data.typeLocation }}</span>
+    </div>
+
+    <!-- ✅ AJOUT : détails du bien (Immobilier) -->
+    <div *ngIf="data?.nombreChambres || data?.nombreDouches || data?.nombreSalon" class="flex flex-wrap gap-2">
+      <span *ngIf="data?.nombreChambres" class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4 text-primary-500">bed</mat-icon> {{ data.nombreChambres }} chambre(s)
+      </span>
+      <span *ngIf="data?.nombreDouches" class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4 text-primary-500">shower</mat-icon> {{ data.nombreDouches }} douche(s)
+      </span>
+      <span *ngIf="data?.nombreSalon" class="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4 text-primary-500">weekend</mat-icon> {{ data.nombreSalon }} salon(s)
+      </span>
+    </div>
+
+    <!-- ✅ AJOUT : équipements booléens -->
+    <div *ngIf="data?.estMeuble || data?.estAutomatique || data?.aGps" class="flex flex-wrap gap-2">
+      <span *ngIf="data?.estMeuble" class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4">check_circle</mat-icon> Meublé
+      </span>
+      <span *ngIf="data?.estAutomatique" class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4">check_circle</mat-icon> Automatique
+      </span>
+      <span *ngIf="data?.aGps" class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-sm flex items-center gap-1">
+        <mat-icon class="icon-size-4">check_circle</mat-icon> GPS
+      </span>
+    </div>
+
+    <!-- Description -->
+    <div *ngIf="data?.description">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Description</p>
+      <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ data.description }}</p>
+    </div>
+
+    <!-- ✅ AJOUT : caractéristiques & équipements cochés -->
+    <div *ngIf="data?.caracteristiques?.length > 0">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Caractéristiques</p>
+      <div class="flex flex-wrap gap-2">
+        <span *ngFor="let c of data.caracteristiques" class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 flex items-center gap-1">
+          <mat-icon class="icon-size-3 text-primary-500">check</mat-icon> {{ c.nom }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Conditions de location -->
+    <!-- ✅ CORRIGÉ : caution_mois/avance_mois sont stockés en texte
+         ("0"), et une chaîne "0" est considérée "vraie" par *ngIf en
+         JavaScript — l'encart s'affichait donc à tort même quand la
+         valeur réelle était nulle (catégories Services, Véhicule...).
+         On convertit maintenant en nombre et on vérifie qu'il est
+         positif avant d'afficher quoi que ce soit. -->
+    <div *ngIf="(+data?.conditionsLocation?.cautionMois > 0) || (+data?.conditionsLocation?.avanceMois > 0) || (data?.conditionsLocation?.fraisVisite > 0)">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Conditions de location</p>
+      <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 space-y-2">
+        <div *ngIf="+data?.conditionsLocation?.cautionMois > 0" class="flex items-center justify-between text-sm">
+          <span class="text-gray-500 flex items-center gap-2">
+            <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:shield-check'"></mat-icon> Caution
+          </span>
+          <span class="font-medium text-gray-900 dark:text-white">{{ data.conditionsLocation.cautionMois }} mois</span>
+        </div>
+        <div *ngIf="+data?.conditionsLocation?.avanceMois > 0" class="flex items-center justify-between text-sm">
+          <span class="text-gray-500 flex items-center gap-2">
+            <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon> Avance
+          </span>
+          <span class="font-medium text-gray-900 dark:text-white">{{ data.conditionsLocation.avanceMois }} mois</span>
+        </div>
+        <div *ngIf="data?.conditionsLocation?.fraisVisite > 0" class="flex items-center justify-between text-sm">
+          <span class="text-gray-500 flex items-center gap-2">
+            <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:receipt-tax'"></mat-icon> Frais de visite
+          </span>
+          <span class="font-medium text-gray-900 dark:text-white">{{ data.conditionsLocation.fraisVisite }} FCFA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ AJOUT : documents (catégorie Services) -->
+    <div *ngIf="data?.docCv || data?.piece">
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Documents</p>
+      <div class="flex flex-col gap-2">
+        <a *ngIf="data?.docCv" [href]="baseUrl + '/files/documents/' + data.docCv" target="_blank"
+          class="flex items-center gap-2 text-primary-600 hover:underline text-sm">
+          <mat-icon class="icon-size-4">description</mat-icon> CV
+        </a>
+        <a *ngIf="data?.piece" [href]="baseUrl + '/files/documents/' + data.piece" target="_blank"
+          class="flex items-center gap-2 text-primary-600 hover:underline text-sm">
+          <mat-icon class="icon-size-4">badge</mat-icon> Pièce d'identité
+        </a>
+      </div>
+    </div>
+
+    <!-- ✅ AJOUT : nombre d'avis -->
+    <div *ngIf="data?.nombreAvis > 0" class="flex items-center gap-2 text-sm text-gray-500">
+      <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:star'"></mat-icon>
+      {{ data.nombreAvis }} avis client(s)
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Propriétaire -->
+    <div>
+      <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Propriétaire</p>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+          <mat-icon class="text-primary-600" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+        </div>
+        <div>
+          <p class="font-medium text-gray-900 dark:text-white">{{ data?.proprietaire?.nom || '—' }}</p>
+          <p class="text-sm text-gray-500">{{ data?.proprietaire?.contact || '—' }}</p>
+          <p *ngIf="data?.proprietaire?.email" class="text-xs text-gray-400">{{ data.proprietaire.email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 text-sm text-gray-500">
+      <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+      Publiée le {{ data?.dateCreation | date:'dd/MM/yyyy à HH:mm' }}
+    </div>
+
+  </div>
+
+  <div class="flex items-center justify-end p-4 border-t border-gray-200 dark:border-gray-700">
+    <button (click)="close()" mat-flat-button [color]="'primary'">Fermer</button>
+  </div>
+</div> 

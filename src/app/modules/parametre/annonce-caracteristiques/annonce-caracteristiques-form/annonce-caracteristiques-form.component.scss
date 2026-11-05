@@ -1,0 +1,57 @@
+
+.custom-grid-container {
+  padding: 30px;
+  background-color: #f5f5f5; 
+  border-radius: 10px;
+}
+
+.custom-grid-list {
+  gap: 30px; 
+}
+
+.custom-grid-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+// .custom-grid-tile:hover {
+//   transform: translateY(-5px);
+//   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+// }
+
+.me-9 {
+  margin-right: 15px; 
+}
+
+
+@media (max-width:580px) {
+  #indicateur {
+      flex-wrap: wrap;
+      row-gap: 15px;
+  }
+
+  #indicateur fuse-card {
+      width: 100% !important;
+  }
+}
+
+
+@media (max-width:680px) {
+  #indicateur-user {
+      flex-wrap: wrap;
+      row-gap: 15px;
+  }
+
+  #indicateuruser fuse-card {
+      width: 100% !important;
+  }
+}
+
+

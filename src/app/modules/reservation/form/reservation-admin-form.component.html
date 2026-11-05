@@ -1,0 +1,79 @@
+ <div class="flex flex-col max-h-screen -m-6">
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+      <div class="text-lg font-medium">Nouvelle réservation</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Annonce</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:home'"></mat-icon>
+      <mat-select formControlName="annonceId">
+        <mat-option *ngFor="let a of listeAnnonces" [value]="a.id">{{ a.titre }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.annonceId.hasError('required')">Veuillez choisir une annonce</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Client</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+      <mat-select formControlName="clientId">
+        <mat-option *ngFor="let c of listeClients" [value]="c.id">{{ c.prenom }} {{ c.nom }} — {{ c.contact }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.clientId.hasError('required')">Veuillez choisir un client</mat-error>
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Date de début</mat-label>
+        <input matInput [matDatepicker]="pickerDebut" formControlName="dateDebut">
+        <mat-datepicker-toggle matSuffix [for]="pickerDebut"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDebut></mat-datepicker>
+        <mat-error *ngIf="form.controls.dateDebut.hasError('required')">Requis</mat-error>
+      </mat-form-field>
+      <mat-form-field class="fuse-mat">
+        <mat-label>Date de fin (optionnelle)</mat-label>
+        <input matInput [matDatepicker]="pickerFin" formControlName="dateFin">
+        <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFin></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Montant total</mat-label>
+        <input matInput type="number" formControlName="montantTotal" min="0">
+        <span matSuffix class="text-gray-400 text-sm mr-3">FCFA</span>
+      </mat-form-field>
+      <mat-form-field class="fuse-mat">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="statut">
+          <mat-option *ngFor="let s of statuts" [value]="s.value">{{ s.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Description (optionnelle)</mat-label>
+      <textarea matInput formControlName="description" rows="2" maxlength="100"></textarea>
+    </mat-form-field>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress" class="min-w-32">
+        <span *ngIf="!inProgress">Créer</span>
+        <span *ngIf="inProgress">Création...</span>
+      </button>
+    </div>
+  </form>
+</div>

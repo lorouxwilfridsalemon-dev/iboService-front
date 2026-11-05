@@ -1,0 +1,180 @@
+<div class="flex flex-col max-h-screen -m-6">
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+      <div class="text-lg font-medium">Nouvel abonnement</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <!-- UTILISATEUR -->
+     <!-- UTILISATEUR -->
+<mat-form-field class="fuse-mat w-full">
+  <mat-label>Utilisateur</mat-label>
+  <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+
+  <mat-select formControlName="utilisateurId" [panelWidth]="'auto'">
+    <!-- Champ de recherche -->
+    <mat-option disabled class="p-0">
+      <mat-form-field class="w-full fuse-mat-dense fuse-mat-no-subscript">
+        <mat-icon matPrefix class="ml-2">search</mat-icon>
+        <input matInput placeholder="Rechercher un utilisateur..."
+               (keydown)="$event.stopPropagation()"
+               (input)="onSearchUtilisateur($event)">
+      </mat-form-field>
+    </mat-option>
+
+    <!-- Indicateur de chargement -->
+    <mat-option *ngIf="isLoadingUtilisateurs" disabled>
+      <div class="flex items-center gap-2 text-gray-500">
+        <mat-spinner diameter="18"></mat-spinner>
+        <span>Chargement...</span>
+      </div>
+    </mat-option>
+
+    <!-- Aucun résultat -->
+    <mat-option *ngIf="!isLoadingUtilisateurs && listeUtilisateursFiltres.length === 0" disabled>
+      Aucun utilisateur trouvé
+    </mat-option>
+
+    <!-- Liste filtrée -->
+    <mat-option *ngFor="let u of listeUtilisateursFiltres" [value]="u.id">
+      {{ u.prenom }} {{ u.nom }}
+      <span *ngIf="u.contact || u.telephone"> — {{ u.contact || u.telephone }}</span>
+    </mat-option>
+  </mat-select>
+
+  <mat-error *ngIf="form.controls.utilisateurId.hasError('required')">
+    Veuillez choisir un utilisateur
+  </mat-error>
+</mat-form-field>
+    <!-- <mat-form-field class="fuse-mat w-full">
+      <mat-label>Utilisateur</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+      <mat-select formControlName="utilisateurId">
+        <mat-option *ngFor="let u of listeUtilisateurs" [value]="u.id">
+          {{ u.prenom }} {{ u.nom }} — {{ u.contact }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.utilisateurId.hasError('required')">
+        Veuillez choisir un utilisateur
+      </mat-error>
+    </mat-form-field> -->
+
+    <!-- PLAN -->
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Plan d'abonnement</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:star'"></mat-icon>
+      <mat-select formControlName="planId" (selectionChange)="onPlanChange($event.value)">
+        <mat-option *ngFor="let p of listePlans" [value]="p.id">
+          {{ p.nom }} — {{ p.prix | number:'1.0-0' }} {{ p.devise }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.planId.hasError('required')">
+        Veuillez choisir un plan
+      </mat-error>
+    </mat-form-field>
+
+    <!-- TYPE + STATUT -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Type de facturation</mat-label>
+        <mat-select formControlName="typeFacturation">
+          <mat-option *ngFor="let t of typesFacturation" [value]="t.value">{{ t.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="statut">
+          <mat-option *ngFor="let s of statuts" [value]="s.value">{{ s.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- DATES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Date de début</mat-label>
+        <input matInput [matDatepicker]="pickerDebut" formControlName="dateDebut" (dateChange)="onDateDebutChange()">
+        <mat-datepicker-toggle matSuffix [for]="pickerDebut"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDebut></mat-datepicker>
+        <mat-error *ngIf="form.controls.dateDebut.hasError('required')">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Date de fin (optionnelle)</mat-label>
+        <input matInput [matDatepicker]="pickerFin" formControlName="dateFin">
+        <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFin></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- PROCHAIN PAIEMENT -->
+    <mat-form-field class="fuse-mat w-full" *ngIf="form.value.typeFacturation === 'mensuel'">
+      <mat-label>Prochain paiement</mat-label>
+      <input matInput [matDatepicker]="pickerProchain" formControlName="dateProchainPaiement">
+      <mat-datepicker-toggle matSuffix [for]="pickerProchain"></mat-datepicker-toggle>
+      <mat-datepicker #pickerProchain></mat-datepicker>
+    </mat-form-field>
+
+    <!-- MONTANT + DEVISE -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Montant payé</mat-label>
+        <input matInput type="number" formControlName="montantPaye" min="0">
+        <mat-error *ngIf="form.controls.montantPaye.hasError('required')">Requis</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Devise</mat-label>
+        <mat-select formControlName="devise">
+          <mat-option *ngFor="let d of devises" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- COMPTEURS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <mat-form-field class="fuse-mat">
+        <mat-label>Annonces utilisées</mat-label>
+        <input matInput type="number" formControlName="annoncesUtilisees" min="0">
+      </mat-form-field>
+
+      <mat-form-field class="fuse-mat">
+        <mat-label>Boosts utilisés</mat-label>
+        <input matInput type="number" formControlName="boostsUtilises" min="0">
+      </mat-form-field>
+    </div>
+
+    <!-- AUTO RENOUVELLEMENT -->
+    <div class="flex items-center gap-3 py-1" *ngIf="form.value.typeFacturation === 'mensuel'">
+      <mat-checkbox formControlName="autoRenouvellement" color="primary">
+        Renouvellement automatique
+      </mat-checkbox>
+    </div>
+
+    <!-- RAISON ANNULATION -->
+    <mat-form-field class="fuse-mat w-full" *ngIf="form.value.statut === 'annule'">
+      <mat-label>Raison d'annulation</mat-label>
+      <textarea matInput formControlName="raisonAnnulation" rows="2" maxlength="500"></textarea>
+    </mat-form-field>
+
+    <!-- BOUTONS -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress" class="min-w-32">
+        <span *ngIf="!inProgress">Créer</span>
+        <span *ngIf="inProgress">Création...</span>
+      </button>
+    </div>
+  </form>
+</div> 

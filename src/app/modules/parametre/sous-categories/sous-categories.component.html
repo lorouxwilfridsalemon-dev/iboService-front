@@ -1,0 +1,195 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <div class="relative flex-0 py-8 px-4 sm:p-8 overflow-hidden bg-primary-800 dark">
+
+    <svg class="absolute inset-0 pointer-events-none" viewBox="40 0 860 430" width="100%" height="100%"
+      preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <g class="text-white-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+        <circle r="234" cx="790" cy="491"></circle>
+        <circle r="210" cx="166" cy="323"></circle>
+      </g>
+    </svg> 
+
+    <div class="relative flex flex-col sm:flex-row flex-0 items-start sm:items-center justify-between gap-4">
+      <div style="color: #33D4FF;" class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+        Sous-catégories
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64 flex-auto sm:flex-initial"
+          [color]="'primary'">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Rechercher une sous-catégorie">
+          <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+        </mat-form-field>
+
+        <button (click)="getListeSousCategories()" class="bg-accent-300 text-black" mat-flat-button
+          [color]="'accent'" matTooltip="Actualiser la liste">
+          <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+          <span class="ml-2 mr-1 hidden sm:inline">Actualiser</span>
+        </button>
+
+        <button (click)="openEditSousCategoriesForm(null)" id="btn-ajout" mat-flat-button [color]="'primary'">
+          <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+          <span class="ml-2 mr-1">Ajouter</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <mat-progress-bar *ngIf="inProgress" mode="indeterminate" [color]="'primary'"></mat-progress-bar>
+
+  <!-- Cartes de statistiques style tableau de bord avec bordures colorées -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    
+    <!-- Carte : Total général avec bordure bleue -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-primary-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            TOTAL SOUS-CATÉGORIES
+          </p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+            {{ totalSousCategories }}
+          </p>
+        </div>
+        <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+          <mat-icon class="text-primary-600 dark:text-primary-300" [svgIcon]="'heroicons_outline:folder'"></mat-icon>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="text-xs text-gray-500 dark:text-gray-400">Tous les profils</span>
+      </div>
+    </div>
+
+    <!-- Cartes dynamiques pour chaque catégorie avec couleurs alternées -->
+    <!-- <div *ngFor="let stat of categoriesStats; let i = index" 
+         [style.border-left-color]="getBorderColor(i)"
+         class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-t border-r border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            {{ stat.nomCategorie | uppercase }}
+          </p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+            {{ stat.nombre }}
+          </p>
+        </div>
+        <div [style.background-color]="getIconBgColor(i)" 
+             class="p-3 rounded-full">
+          <mat-icon [style.color]="getIconColor(i)" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="text-xs text-gray-500 dark:text-gray-400">Sous-catégories</span>
+      </div>
+    </div> -->
+
+    <!-- Cartes dynamiques pour chaque catégorie avec couleurs alternées -->
+<div *ngFor="let stat of categoriesStats; let i = index" 
+     class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-t border-r border-b border-gray-200 dark:border-gray-700"
+     [ngClass]="getBorderClass(i)">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        {{ stat.nomCategorie | uppercase }}
+      </p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+        {{ stat.nombre }}
+      </p>
+    </div>
+    <div [style.background-color]="getIconBgColor(i)" 
+         class="p-3 rounded-full">
+      <mat-icon [style.color]="getIconColor(i)" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+    </div>
+  </div>
+  <div class="mt-2">
+    <span class="text-xs text-gray-500 dark:text-gray-400">Sous-catégories</span>
+  </div>
+</div>
+
+    <!-- Carte : Non assignées avec bordure rouge -->
+    <div *ngIf="getNonAssigneesCount() > 0" 
+         class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-warn-500 border-t border-r border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            NON ASSIGNÉES
+          </p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+            {{ getNonAssigneesCount() }}
+          </p>
+        </div>
+        <div class="p-3 bg-warn-100 dark:bg-warn-900 rounded-full">
+          <mat-icon class="text-warn-600 dark:text-warn-300" [svgIcon]="'heroicons_outline:exclamation'"></mat-icon>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="text-xs text-gray-500 dark:text-gray-400">Sans catégorie</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-0 p-2 sm:p-4">
+    <div class="rounded-2xl shadow overflow-hidden bg-card">
+      <table mat-table class="table-max-width w-full" [dataSource]="sousCategoriesDataSource" matSort fxFlex>
+
+        <ng-container matColumnDef="libelle">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Nom sous catégorie  </th>
+          <td mat-cell *matCellDef="let element" class="font-medium">{{ element?.nom }}</td> 
+        </ng-container>
+
+        <ng-container matColumnDef="categorie">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Catégorie </th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element?.categorie?.nom; else sansCategorie"
+              class="px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700">
+              {{ element?.categorie?.nom }}
+            </span>
+            <ng-template #sansCategorie>
+              <span class="text-secondary text-xs italic">Non assignée</span>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateCreation">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="text-white"> Date de création </th>
+          <td mat-cell *matCellDef="let element">{{ element?.dateCreation | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="text-white text-right"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="action-column text-right">
+            <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditSousCategoriesForm(element)">
+                <mat-icon>folder_special</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item class="text-warn" (click)="deleteSousCategories(element)">
+                <mat-icon svgIcon="mat_outline:delete_forever"></mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="bg-primary-800  text-white"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-hover transition-colors"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-secondary" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon class="icon-size-10 opacity-40" [svgIcon]="'heroicons_outline:inbox'"></mat-icon>
+              <span>Aucune sous-catégorie correspondant au filtre</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="border-t"></mat-paginator>
+    </div>
+  </div>
+
+</div>

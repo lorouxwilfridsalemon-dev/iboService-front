@@ -1,0 +1,122 @@
+<!-- <div class="flex flex-col max-h-screen -m-6">
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:link'"></mat-icon>
+      <div class="text-lg font-medium">Associer une caractéristique à une sous-catégorie</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Caractéristique</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+      <mat-select formControlName="caracteristiqueId">
+        <mat-option *ngFor="let car of listeCaracteristiques" [value]="car.id">
+          {{ car.nom }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.caracteristiqueId.hasError('required')">
+        Veuillez choisir une caractéristique
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Sous-catégorie</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:collection'"></mat-icon>
+      <mat-select formControlName="sousCategorieId">
+        <mat-option *ngFor="let sc of listeSousCategories" [value]="sc.id">
+          {{ sc.nom }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.sousCategorieId.hasError('required')">
+        Veuillez choisir une sous-catégorie
+      </mat-error>
+    </mat-form-field>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress"
+        class="min-w-32">
+        <mat-progress-spinner *ngIf="inProgress" diameter="20" mode="indeterminate" class="mr-2 inline-block">
+        </mat-progress-spinner>
+        <span *ngIf="!inProgress">Associer</span>
+        <span *ngIf="inProgress">Enregistrement...</span>
+      </button>
+    </div>
+  </form>
+</div>  -->
+
+
+<div class="flex flex-col max-h-screen -m-6">
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:link'"></mat-icon>
+      <div class="text-lg font-medium">Associer une caractéristique à une sous-catégorie</div>
+    </div>
+    <button (click)="close()" mat-icon-button [tabIndex]="-1">
+      <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4" (ngSubmit)="save()">
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Caractéristiques</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+      <mat-select formControlName="caracteristiqueIds" multiple>
+        <mat-option *ngFor="let car of listeCaracteristiques" [value]="car.id">
+          {{ car.nom }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>{{ form.controls.caracteristiqueIds.value?.length || 0 }} sélectionnée(s)</mat-hint>
+      <mat-error *ngIf="form.controls.caracteristiqueIds.hasError('required')">
+        Veuillez choisir au moins une caractéristique
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="fuse-mat w-full">
+      <mat-label>Sous-catégories</mat-label>
+      <mat-icon matPrefix class="mr-2 text-secondary" [svgIcon]="'heroicons_outline:collection'"></mat-icon>
+      <mat-select formControlName="sousCategorieIds" multiple>
+        <mat-option *ngFor="let sc of listeSousCategories" [value]="sc.id">
+          {{ sc.nom }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>{{ form.controls.sousCategorieIds.value?.length || 0 }} sélectionnée(s)</mat-hint>
+      <mat-error *ngIf="form.controls.sousCategorieIds.hasError('required')">
+        Veuillez choisir au moins une sous-catégorie
+      </mat-error>
+    </mat-form-field>
+
+    <!-- ✅ AJOUT : aperçu du nombre d'associations qui seront créées. -->
+    <div *ngIf="form.controls.caracteristiqueIds.value?.length > 0 && form.controls.sousCategorieIds.value?.length > 0"
+      class="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-200">
+      <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:information-circle'"></mat-icon>
+      {{ form.controls.caracteristiqueIds.value.length * form.controls.sousCategorieIds.value.length }}
+      association(s) seront créées ({{ form.controls.caracteristiqueIds.value.length }} × {{ form.controls.sousCategorieIds.value.length }})
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2">
+      <button (click)="close()" type="button"
+        class="bg-white text-gray-700 border border-solid border-gray-300 hover:bg-gray-50"
+        mat-flat-button [disabled]="inProgress">
+        Annuler
+      </button>
+      <button type="submit" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress"
+        class="min-w-32">
+        <mat-progress-spinner *ngIf="inProgress" diameter="20" mode="indeterminate" class="mr-2 inline-block">
+        </mat-progress-spinner>
+        <span *ngIf="!inProgress">Associer</span>
+        <span *ngIf="inProgress">Enregistrement...</span>
+      </button>
+    </div>
+  </form>
+</div> 

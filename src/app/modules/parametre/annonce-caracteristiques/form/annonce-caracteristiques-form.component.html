@@ -1,0 +1,68 @@
+<div class="flex flex-col max-h-screen -m-6">
+  <!-- Header Section -->
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-accent text-on-primary">
+      <div class="text-lg font-medium">
+          {{ data?.id ? 'Modifier' : 'Ajouter' }} une caractéristique d'annonce
+      </div>
+      <button (click)="close()" mat-icon-button [tabIndex]="-1">
+          <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+      </button>
+  </div>
+
+  <form [formGroup]="form" class="flex flex-col flex-auto p-4 sm:p-6 overflow-y-auto space-y-4">
+    
+    <!-- ✅ CORRIGÉ : 'valeur' au lieu de 'libelle' -->
+    <mat-form-field class="fuse-mat min-w-90">
+        <mat-label>Valeur de la caractéristique</mat-label>
+        <input matInput type="text" placeholder="Ex: Rouge, 10kg, etc." required formControlName="valeur">
+        <mat-error *ngIf="form.controls.valeur.invalid && form.controls.valeur.touched">
+            <span *ngIf="form.controls.valeur.errors?.required">La valeur est obligatoire</span>
+            <span *ngIf="form.controls.valeur.errors?.minlength">Minimum 2 caractères</span>
+            <span *ngIf="form.controls.valeur.errors?.maxlength">Maximum 100 caractères</span>
+        </mat-error>
+    </mat-form-field>
+
+    <!-- ✅ AJOUT : Description (optionnelle) -->
+    <mat-form-field class="fuse-mat min-w-90">
+        <mat-label>Description (optionnelle)</mat-label>
+        <input matInput type="text" placeholder="Description..." formControlName="description">
+    </mat-form-field>
+
+    <!-- ✅ AJOUT : Sélection de la caractéristique (relation ManyToOne) -->
+    <mat-form-field class="fuse-mat min-w-90">
+        <mat-label>Caractéristique</mat-label>
+        <mat-select formControlName="caracteristique" required>
+            <mat-option *ngFor="let car of listeCaracteristiques" [value]="car">
+                {{ car.nom }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.controls.caracteristique.invalid && form.controls.caracteristique.touched">
+            La caractéristique est obligatoire
+        </mat-error>
+    </mat-form-field>
+
+    <!-- ✅ AJOUT : Sélection de l'annonce (relation ManyToOne) -->
+    <mat-form-field class="fuse-mat min-w-90">
+        <mat-label>Annonce</mat-label>
+        <mat-select formControlName="annonce" required>
+            <mat-option *ngFor="let ann of listeAnnonces" [value]="ann">
+                {{ ann.titre }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.controls.annonce.invalid && form.controls.annonce.touched">
+            L'annonce est obligatoire
+        </mat-error>
+    </mat-form-field>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
+        <button (click)="close()" class="border border-solid border-gray-300" mat-stroked-button [color]="'warn'">
+            Annuler
+        </button>
+        <button (click)="save()" mat-flat-button [color]="'primary'" [disabled]="form.invalid || inProgress">
+            <mat-icon *ngIf="inProgress" class="mr-2 spin" [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+            {{ data?.id ? 'Modifier' : 'Ajouter' }}
+        </button>
+    </div>
+  </form>
+</div> 

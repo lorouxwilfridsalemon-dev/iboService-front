@@ -1,0 +1,128 @@
+<button
+    mat-icon-button
+    [matMenuTriggerFor]="userActions">
+    <span class="relative">
+        <!-- ✅ CORRIGÉ : 'photo' (vrai champ backend) au lieu de
+             'avatar' (champ fictif du mock Fuse) — avec construction de
+             l'URL complète, même convention que le mobile. -->
+        <img
+            class="w-7 h-7 rounded-full object-cover"
+            *ngIf="showAvatar && user?.photo"
+            [src]="urlPhoto">
+        <mat-icon
+            *ngIf="!showAvatar || !user?.photo"
+            [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+    </span>
+</button>
+
+<mat-menu
+    [xPosition]="'before'"
+    #userActions="matMenu">
+    <button mat-menu-item>
+        <span class="flex flex-col leading-none">
+            <!-- ✅ CORRIGÉ : nom complet réel au lieu de rien, email réel. -->
+            <span class="font-medium">{{ user?.prenom }} {{ user?.nom }}</span>
+            <span class="mt-1 text-sm text-secondary">{{ user?.email }}</span>
+        </span>
+    </button>
+
+    <button
+        mat-menu-item
+        [matMenuTriggerFor]="userStatus">
+        <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
+        <span>Information du compte</span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button
+        mat-menu-item
+        (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Se déconnecter</span>
+    </button>
+</mat-menu>
+
+<mat-menu
+    class="user-status-menu"
+    #userStatus="matMenu">
+    <!-- ✅ CORRIGÉ ENTIÈREMENT : "Profil : Admin", "Compétences :
+         Développeur", "Statut : Développeur junior" étaient des valeurs
+         FIGÉES en dur, sans rapport avec les vraies données de
+         l'utilisateur connecté (ni même avec ce projet — "compétences"
+         n'existe pas sur UtilisateurEntity). Remplacé par les vrais
+         champs : profil (type de compte), contact, email. -->
+    <button mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+        <span>Profil :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.profil?.libelle || '—' }}</span>
+    </button>
+    <button mat-menu-item *ngIf="user?.contact">
+        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+        <span>Contact :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.contact }}</span>
+    </button>
+    <button mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+        <span>Email :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.email }}</span>
+    </button>
+</mat-menu>
+
+<!-- <button
+    mat-icon-button
+    [matMenuTriggerFor]="userActions">
+    <span class="relative">
+        
+        <img
+            class="w-7 h-7 rounded-full object-cover"
+            *ngIf="showAvatar && user?.photo"
+            [src]="urlPhoto">
+        <mat-icon
+            *ngIf="!showAvatar || !user?.photo"
+            [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+    </span>
+</button>
+
+<mat-menu
+    [xPosition]="'before'"
+    #userActions="matMenu">
+    <button mat-menu-item>
+        <span class="flex flex-col leading-none">
+            <span class="font-medium">{{ user?.prenom }} {{ user?.nom }}</span>
+            <span class="mt-1 text-sm text-secondary">{{ user?.email }}</span>
+        </span>
+    </button>
+
+    <button
+        mat-menu-item
+        [matMenuTriggerFor]="userStatus">
+        <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
+        <span>Information du compte</span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button
+        mat-menu-item
+        (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Se déconnecter</span>
+    </button>
+</mat-menu>
+
+<mat-menu
+    class="user-status-menu"
+    #userStatus="matMenu">
+    <button mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+        <span>Profil :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.profil?.libelle || '—' }}</span>
+    </button>
+    <button mat-menu-item *ngIf="user?.contact">
+        <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+        <span>Contact :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.contact }}</span>
+    </button>
+    <button mat-menu-item>
+        <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+        <span>Email :</span>
+        <span class="ml-1 text-primary-500 font-bold">{{ user?.email }}</span>
+    </button>
+</mat-menu> -->
